@@ -404,12 +404,19 @@
             clearAccountDisplay();
 
             try {
+                // Tắt proxy mặc định để tránh lỗi từ các proxy miễn phí không ổn định
+                const payload = {
+                    ...data,
+                    useProxy: false,
+                    countryCode: data.countryCode || 'VN'
+                };
+
                 const response = await fetch(`${API_BASE_URL}/api/tiktokregistration/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(payload)
                 });
 
                 const result = await response.json();
