@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E_ToolTiktok - Tự Động Đăng Ký TikTok</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff0050;
+            --secondary-color: #00f2ea;
+            --dark-bg: #161823;
+            --card-bg: #1f2937;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+        }
+
+        .main-container {
+            padding: 2rem 0;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), #ff1744);
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        .card-title {
+            color: white;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #ff1744);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 0, 80, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00c851, #00f2ea);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: var(--text-primary);
+            padding: 12px 15px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(255, 0, 80, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .account-card {
+            background: linear-gradient(135deg, rgba(0, 242, 234, 0.1), rgba(255, 0, 80, 0.1));
+            border: 2px solid rgba(255, 0, 80, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .account-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .info-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .spinner-border {
+            width: 1rem;
+            height: 1rem;
+            border-width: 0.15em;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stats-label {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .auto-mode-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(255, 0, 80, 0.1);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, var(--primary-color), #ff1744);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fab fa-tiktok"></i>
+                            E_ToolTiktok - Tự Động Đăng Ký Tài Khoản TikTok
+                        </h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Auto Mode Toggle -->
+                        <div class="auto-mode-toggle">
+                            <div>
+                                <strong><i class="fas fa-robot"></i> Chế Độ Tự Động</strong>
+                                <p class="mb-0 text-muted small">Tự động tạo email và đăng ký tài khoản</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="autoModeToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <!-- Manual Registration Form -->
+                        <div id="manualForm">
+                            <h5 class="mb-3"><i class="fas fa-user-plus"></i> Đăng Ký Thủ Công</h5>
+                            <form id="registrationForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Email (để trống để tự động tạo)</label>
+                                        <input type="email" class="form-control" id="email" placeholder="example@email.com">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Mật Khẩu *</label>
+                                        <input type="password" class="form-control" id="password" placeholder="Nhập mật khẩu" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Tên Người Dùng</label>
+                                        <input type="text" class="form-control" id="username" placeholder="username">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Ngày Sinh</label>
+                                        <input type="date" class="form-control" id="birthDate">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-user-plus"></i> Đăng Ký Tài Khoản
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Auto Registration -->
+                        <div id="autoForm" style="display: none;">
+                            <h5 class="mb-3"><i class="fas fa-robot"></i> Tự Động Tạo Tài Khoản</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Số Lượng Tài Khoản</label>
+                                <input type="number" class="form-control" id="accountCount" value="1" min="1" max="10">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mật Khẩu Mặc Định</label>
+                                <input type="password" class="form-control" id="defaultPassword" placeholder="Nhập mật khẩu mặc định" required>
+                            </div>
+                            <button type="button" class="btn btn-success w-100" id="autoRegisterBtn">
+                                <i class="fas fa-play"></i> Bắt Đầu Tạo Tự Động
+                            </button>
+                        </div>
+
+                        <!-- Loading Indicator -->
+                        <div id="loadingIndicator" class="text-center mt-4" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Đang xử lý...</p>
+                        </div>
+
+                        <!-- Alert Messages -->
+                        <div id="alertContainer" class="mt-3"></div>
+
+                        <!-- Account Display -->
+                        <div id="accountDisplay"></div>
+                    </div>
+                </div>
+
+                <!-- Statistics Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stats-card">
+                                    <div class="stats-number" id="totalAccounts">0</div>
+                                    <div class="stats-label">Tổng Tài Khoản</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stats-card">
+                                    <div class="stats-number" id="successAccounts">0</div>
+                                    <div class="stats-label">Thành Công</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stats-card">
+                                    <div class="stats-number" id="failedAccounts">0</div>
+                                    <div class="stats-label">Thất Bại</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_BASE_URL = window.location.origin;
+        let accounts = [];
+        let stats = {
+            total: 0,
+            success: 0,
+            failed: 0
+        };
+
+        // Toggle Auto/Manual Mode
+        document.getElementById('autoModeToggle').addEventListener('change', function(e) {
+            const isAuto = e.target.checked;
+            document.getElementById('manualForm').style.display = isAuto ? 'none' : 'block';
+            document.getElementById('autoForm').style.display = isAuto ? 'block' : 'none';
+        });
+
+        // Manual Registration Form
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await registerAccount({
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                username: document.getElementById('username').value,
+                birthDate: document.getElementById('birthDate').value || null
+            });
+        });
+
+        // Auto Registration
+        document.getElementById('autoRegisterBtn').addEventListener('click', async function() {
+            const count = parseInt(document.getElementById('accountCount').value);
+            const password = document.getElementById('defaultPassword').value;
+            
+            if (!password) {
+                showAlert('Vui lòng nhập mật khẩu mặc định', 'warning');
+                return;
+            }
+
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang tạo...';
+
+            for (let i = 0; i < count; i++) {
+                await registerAccount({
+                    email: '', // Tự động tạo
+                    password: password,
+                    username: '',
+                    birthDate: null
+                });
+                // Đợi 2 giây giữa mỗi lần tạo
+                if (i < count - 1) {
+                    await sleep(2000);
+                }
+            }
+
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-play"></i> Bắt Đầu Tạo Tự Động';
+            showAlert(`Đã hoàn thành tạo ${count} tài khoản!`, 'success');
+        });
+
+        // Register Account Function
+        async function registerAccount(data) {
+            showLoading(true);
+            clearAlerts();
+            clearAccountDisplay();
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tiktokregistration/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                showLoading(false);
+
+                if (result.success && result.account) {
+                    accounts.push(result.account);
+                    updateStats(true);
+                    displayAccount(result.account);
+                    await saveAccountToFile(result.account);
+                    showAlert('Đăng ký thành công!', 'success');
+                } else {
+                    updateStats(false);
+                    showAlert(result.message || 'Đăng ký thất bại', 'danger');
+                }
+            } catch (error) {
+                showLoading(false);
+                updateStats(false);
+                showAlert('Lỗi kết nối: ' + error.message, 'danger');
+            }
+        }
+
+        // Display Account
+        function displayAccount(account) {
+            const displayDiv = document.getElementById('accountDisplay');
+            const accountCard = document.createElement('div');
+            accountCard.className = 'account-card';
+            accountCard.innerHTML = `
+                <h5 class="mb-3"><i class="fas fa-check-circle text-success"></i> Tài Khoản Đã Tạo Thành Công</h5>
+                <div class="account-info">
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">${account.email || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tên Người Dùng</div>
+                        <div class="info-value">${account.username || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Mật Khẩu</div>
+                        <div class="info-value">${account.password || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Trạng Thái</div>
+                        <div class="info-value">
+                            ${account.isVerified ? '<span class="badge bg-success">Đã Xác Thực</span>' : '<span class="badge bg-warning">Chưa Xác Thực</span>'}
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ngày Tạo</div>
+                        <div class="info-value">${new Date(account.createdAt).toLocaleString('vi-VN')}</div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-sm btn-outline-light" onclick="copyAccountInfo(this)">
+                        <i class="fas fa-copy"></i> Sao Chép Thông Tin
+                    </button>
+                </div>
+            `;
+            displayDiv.innerHTML = accountCard.outerHTML;
+        }
+
+        // Save Account to File
+        async function saveAccountToFile(account) {
+            try {
+                const accountData = {
+                    email: account.email || '',
+                    username: account.username || '',
+                    password: account.password || '',
+                    isVerified: account.isVerified || false,
+                    createdAt: account.createdAt || new Date().toISOString()
+                };
+
+                const response = await fetch(`${API_BASE_URL}/api/tiktokregistration/save-account`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(accountData)
+                });
+
+                if (response.ok) {
+                    console.log('Đã lưu tài khoản vào file');
+                }
+            } catch (error) {
+                console.error('Lỗi khi lưu file:', error);
+            }
+        }
+
+        // Update Statistics
+        function updateStats(success) {
+            stats.total++;
+            if (success) {
+                stats.success++;
+            } else {
+                stats.failed++;
+            }
+            document.getElementById('totalAccounts').textContent = stats.total;
+            document.getElementById('successAccounts').textContent = stats.success;
+            document.getElementById('failedAccounts').textContent = stats.failed;
+        }
+
+        // Utility Functions
+        function showLoading(show) {
+            document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            alertContainer.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        function clearAlerts() {
+            document.getElementById('alertContainer').innerHTML = '';
+        }
+
+        function clearAccountDisplay() {
+            document.getElementById('accountDisplay').innerHTML = '';
+        }
+
+        function copyAccountInfo(button) {
+            const accountCard = button.closest('.account-card');
+            const email = accountCard.querySelector('.info-item:nth-child(1) .info-value').textContent;
+            const username = accountCard.querySelector('.info-item:nth-child(2) .info-value').textContent;
+            const password = accountCard.querySelector('.info-item:nth-child(3) .info-value').textContent;
+            
+            const text = `Email: ${email}\nUsername: ${username}\nPassword: ${password}`;
+            navigator.clipboard.writeText(text).then(() => {
+                button.innerHTML = '<i class="fas fa-check"></i> Đã Sao Chép';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy"></i> Sao Chép Thông Tin';
+                }, 2000);
+            });
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
+
